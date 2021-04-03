@@ -1,7 +1,6 @@
 interface Offer {
-    quant: number;
-    price: number;
-    brokerName: string
+  quant: number;
+  price: number;
 }
 
-export default Offer
+export default Offer;

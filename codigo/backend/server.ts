@@ -1,34 +1,41 @@
-import * as Amqp from 'amqp-ts'
-import StockExchange from './services/StockExchange'
-import Stock from './models/Stock'
+import * as dotenv from "dotenv";
+import * as Amqp from "amqp-ts";
+import StockExchange from "./services/StockExchange";
+import Stock from "./models/Stock";
+dotenv.config({ path: __dirname + "/.env" });
 
-const host = "amqps://audadgox:B0puktOZZBbZ3xW_jJ_oxm-Z0RXovzDF@jackal.rmq.cloudamqp.com/audadgox"
+const host = process.env.CLOUDAMQP_HOST;
 
 const connection = new Amqp.Connection(host);
 
-const exchange = connection.declareExchange("test2",'topic', {durable: false});
-
-const buyQueue = connection.declareQueue("buyQueue");
-const sellQueue = connection.declareQueue("sellQueue")
-const transactionQueue = connection.declareQueue("transactionQueue");
-
-
-buyQueue.bind(exchange, 'compra.*');
-buyQueue.activateConsumer((message) => {
-  const stockName = message.fields.routingKey
-  StockExchange.handleStock(stockName, message)
-  console.log("Message received compra: " + message.getContent());
+const exchange = connection.declareExchange("BovespaExchange", "topic", {
+  durable: false,
 });
 
-sellQueue.bind(exchange, 'venda.*');
+const buyQueue = connection.declareQueue("buyQueue");
+const sellQueue = connection.declareQueue("sellQueue");
+const transactionQueue = connection.declareQueue("transactionQueue");
+
+buyQueue.bind(exchange, "compra.*");
+buyQueue.activateConsumer((message) => {
+  try {
+    const stockName = message.fields.routingKey;
+    StockExchange.handleStock(stockName, message);
+    console.log("Message received compra: " + message.getContent());
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
+sellQueue.bind(exchange, "venda.*");
 sellQueue.activateConsumer((message) => {
-  const stockName = message.fields.routingKey
-  StockExchange.handleStock(stockName, message)
+  const stockName = message.fields.routingKey;
+  StockExchange.handleStock(stockName, message);
 
   console.log("Message received venda: " + message.getContent());
 });
 
-transactionQueue.bind(exchange, 'transacao.*');
+transactionQueue.bind(exchange, "transacao.*");
 transactionQueue.activateConsumer((message) => {
   console.log("Message received transação: " + message.getContent());
 });
@@ -42,4 +49,3 @@ connection.completeConfiguration().then(() => {
   var msg2 = new Amqp.Message("Test2");
   exchange.send(msg2);
 });
-
