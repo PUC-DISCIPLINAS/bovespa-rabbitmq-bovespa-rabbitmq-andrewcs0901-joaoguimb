@@ -2,6 +2,8 @@ import * as dotenv from "dotenv";
 import * as Amqp from "amqp-ts";
 import StockExchange from "./services/StockExchange";
 import Stock from "./models/Stock";
+
+console.log("Starting server...");
 dotenv.config({ path: __dirname + "/.env" });
 
 const host = process.env.CLOUDAMQP_HOST;

@@ -3,8 +3,8 @@ import Offer from "../interfaces/Offer";
 import Stock from "./Stock";
 
 class OfferBook {
-  static buyOffers: Object;
-  static sellOffers: Object;
+  static buyOffers: Object = {};
+  static sellOffers: Object = {};
 
   static createBuyOffer(offer: Stock) {
     const sellOffer = this.checkTransaction(offer, "compra");
@@ -14,12 +14,12 @@ class OfferBook {
         offer,
         sellOffer
       );
-      if (remainingOffer.getOfferQuant() > 0)
+      if (remainingOffer.getOfferQuant() > 0) {
+        this.updateOffer(remainingOffer, "compra");
         this.checkTransaction(remainingOffer, "compra");
-      console.log("Lista Após venda ->" + this.sellOffers);
+      }
     } else {
       this.buyOffers = this.createOffer(this.buyOffers, offer);
-      console.log(this.buyOffers);
     }
   }
 
@@ -28,13 +28,24 @@ class OfferBook {
     if (buyOffers && buyOffers.length) {
       console.log(buyOffers);
       const remainingOffer = this.transaction(this.buyOffers, offer, buyOffers);
-      if (remainingOffer.getOfferQuant() > 0)
+      if (remainingOffer.getOfferQuant() > 0) {
+        this.updateOffer(remainingOffer, "venda");
         this.checkTransaction(remainingOffer, "venda");
-      console.log(this.sellOffers);
+      }
     } else {
       this.sellOffers = this.createOffer(this.sellOffers, offer);
-      console.log(this.sellOffers);
     }
+  }
+
+  private static updateOffer(offer: Stock, transactionType: string) {
+    const offers =
+      transactionType === "venda" ? this.sellOffers : this.buyOffers;
+    let newObj = {};
+    newObj[offer.getBrokerName()] = {
+      price: offer.getOfferPrice(),
+      quant: offer.getOfferQuant(),
+    };
+    offers[offer.getStockName()] = newObj;
   }
 
   private static checkTransaction(offer: Stock, transactionType: string) {
