@@ -1,37 +1,30 @@
 import Stock from "../models/Stock";
 import Transaction from "../models/Transactions";
 
-import { createServer, Server } from "http";
 import * as socketIo from "socket.io";
+import * as http from "http";
+import { Server, Socket } from "socket.io";
 
-class App {
-  public server: Server;
-  private io: SocketIO.Server;
-  public PORT: number = 8100;
+const httpServer = http.createServer();
+const io = new Server(httpServer, {
+  path: "/test",
+});
 
-  constructor() {
-    this.sockets();
-    this.listen();
-  }
+httpServer.listen(5566);
 
-  private sockets(): void {
-    this.server = createServer(this.app);
-    this.io = socketIo(this.server);
-  }
+export function sendTransaction(transaction: Transaction) {
+  io.on("connection", (socket: Socket) => {
+    console.log("Connection");
 
-  private listen(): void {
-    this.io.on("connection", (socket: any) => {
-      console.log("a user connected");
-
-      socket.on("chat message", function (msg) {
-        console.log("message: " + msg);
-      });
-
-      socket.on("disconnect", () => {
-        console.log("user disconnected");
-      });
-    });
-  }
+    socket.emit(transaction.getStockName(), transaction);
+  });
 }
 
-export default new App();
+export function sendOffer(offer: Stock) {
+  console.log("executou");
+  io.on("connection", (socket) => {
+    console.log("Connection");
+    console.log(offer);
+    socket.emit(offer.getStockName(), offer);
+  });
+}

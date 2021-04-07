@@ -2,7 +2,7 @@ import { off } from "process";
 import Offer from "../interfaces/Offer";
 import Stock from "./Stock";
 import Transaction from "./Transactions";
-import WebSocket from "../services/WebSocket";
+import { sendTransaction, sendOffer } from "../services/WebSocket";
 
 class OfferBook {
   static buyOffers: Object = {};
@@ -22,10 +22,11 @@ class OfferBook {
         this.updateOffer(remainingOffer, "compra");
         this.checkTransaction(remainingOffer, "compra");
       }
-
+      sendTransaction(this.transaction);
       return this.transaction;
     } else {
       this.buyOffers = this.createOffer(this.buyOffers, offer);
+      sendOffer(offer);
       return offer;
     }
   }
@@ -44,11 +45,11 @@ class OfferBook {
         this.updateOffer(remainingOffer, "venda");
         this.checkTransaction(remainingOffer, "venda");
       }
-      WebSocket.sendTransaction(this.transaction);
+      sendTransaction(this.transaction);
       return this.transaction;
     } else {
       this.sellOffers = this.createOffer(this.sellOffers, offer);
-      WebSocket.sendOffer(offer);
+      sendOffer(offer);
       return offer;
     }
   }
@@ -62,7 +63,7 @@ class OfferBook {
       quant: offer.getOfferQuant(),
     };
     offers[offer.getStockName()] = newObj;
-    WebSocket.sendOffer(offer);
+    sendOffer(offer);
   }
 
   private static checkTransaction(offer: Stock, transactionType: string) {

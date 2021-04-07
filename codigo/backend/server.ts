@@ -23,7 +23,7 @@ buyQueue.bind(exchange, "compra.*");
 buyQueue.activateConsumer((message) => {
   try {
     const stockName = message.fields.routingKey;
-    const operation = StockExchange.handleStock(stockName, message);
+    StockExchange.handleStock(stockName, message);
     console.log("Message received compra: " + message.getContent());
   } catch (error) {
     console.log(error.message);
