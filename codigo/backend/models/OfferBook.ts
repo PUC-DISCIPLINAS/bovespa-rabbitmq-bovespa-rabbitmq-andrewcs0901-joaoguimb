@@ -1,39 +1,55 @@
 import { off } from "process";
 import Offer from "../interfaces/Offer";
 import Stock from "./Stock";
+import Transaction from "./Transactions";
+import WebSocket from "../services/WebSocket";
 
 class OfferBook {
   static buyOffers: Object = {};
   static sellOffers: Object = {};
+  static transaction: Transaction;
 
-  static createBuyOffer(offer: Stock) {
+  static createBuyOffer(offer: Stock): Transaction | Stock {
     const sellOffer = this.checkTransaction(offer, "compra");
     if (sellOffer && sellOffer.length) {
-      const remainingOffer = this.transaction(
+      const remainingOffer = this.makeTransaction(
         this.sellOffers,
         offer,
-        sellOffer
+        sellOffer,
+        "compra"
       );
       if (remainingOffer.getOfferQuant() > 0) {
         this.updateOffer(remainingOffer, "compra");
         this.checkTransaction(remainingOffer, "compra");
       }
+
+      return this.transaction;
     } else {
       this.buyOffers = this.createOffer(this.buyOffers, offer);
+      return offer;
     }
   }
 
-  static createSellOffer(offer: Stock) {
+  static createSellOffer(offer: Stock): Transaction | Stock {
     const buyOffers = this.checkTransaction(offer, "venda");
     if (buyOffers && buyOffers.length) {
       console.log(buyOffers);
-      const remainingOffer = this.transaction(this.buyOffers, offer, buyOffers);
+      const remainingOffer = this.makeTransaction(
+        this.buyOffers,
+        offer,
+        buyOffers,
+        "venda"
+      );
       if (remainingOffer.getOfferQuant() > 0) {
         this.updateOffer(remainingOffer, "venda");
         this.checkTransaction(remainingOffer, "venda");
       }
+      WebSocket.sendTransaction(this.transaction);
+      return this.transaction;
     } else {
       this.sellOffers = this.createOffer(this.sellOffers, offer);
+      WebSocket.sendOffer(offer);
+      return offer;
     }
   }
 
@@ -46,6 +62,7 @@ class OfferBook {
       quant: offer.getOfferQuant(),
     };
     offers[offer.getStockName()] = newObj;
+    WebSocket.sendOffer(offer);
   }
 
   private static checkTransaction(offer: Stock, transactionType: string) {
@@ -83,16 +100,28 @@ class OfferBook {
     return offerObj;
   }
 
-  static transaction(
+  static makeTransaction(
     offersObj: Object,
     offer: Stock,
-    sellOffer: string[]
+    sellOffer: string[],
+    transactionType: string
   ): Stock {
     let buyerOffer = offer.getOfferQuant(); // 30 -> [10]
     for (let i = 0; buyerOffer > 0 && i < sellOffer.length; i++) {
       const sell = sellOffer[i];
       const buyerOffer2 = buyerOffer;
       buyerOffer = buyerOffer - offersObj[offer.getStockName()][sell].quant;
+      this.transaction = new Transaction(
+        new Date().toLocaleDateString(),
+        {
+          price: offer.getOfferPrice(),
+          quant: buyerOffer2,
+        },
+        offer.getStockName(),
+        transactionType === "compra" ? offer.getBrokerName() : sell,
+        transactionType === "venda" ? offer.getBrokerName() : sell
+      );
+
       if (buyerOffer >= 0) delete offersObj[offer.getStockName()][sell];
       else offersObj[offer.getStockName()][sell].quant -= buyerOffer2;
     }

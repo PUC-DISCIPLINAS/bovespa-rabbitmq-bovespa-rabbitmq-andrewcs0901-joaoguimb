@@ -11,6 +11,13 @@ export default class Stock {
     this.brokerName = brokerName;
   }
 
+  public getOffer() {
+    return {
+      price: this.getOfferPrice(),
+      quant: this.getOfferQuant(),
+    };
+  }
+
   public getOfferPrice() {
     return this.offer.price;
   }
