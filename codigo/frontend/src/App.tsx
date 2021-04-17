@@ -47,11 +47,13 @@ function App() {
 
   async function createOffer(e: any) {
     e.preventDefault();
+    const routingKey = `${type}.${stockName}`
     const newOffer = {
       stockName,
       brokerName,
       price,
       quant,
+      routingKey
     };
     const parseObj = JSON.stringify(newOffer);
     console.log(newOffer);
