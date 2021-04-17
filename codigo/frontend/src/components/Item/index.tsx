@@ -12,7 +12,6 @@ export const Item = ({ stockName, brokerName, offer }: ItemProps) =>
         </div>
         <div>
             Oferta: <span>Qnt: {offer.quant}</span> <span>$: {offer.price}</span>
-
         </div>
     </Styles>
 )

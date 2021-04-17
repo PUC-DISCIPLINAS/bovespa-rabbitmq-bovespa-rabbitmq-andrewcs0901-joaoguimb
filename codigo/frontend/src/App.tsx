@@ -6,23 +6,48 @@ import { Container, InputRadioContainer, FormsContainer } from "./AppStyle";
 import InputRadio from "./components/InputRadio";
 function App() {
   const [brokerName, setBrokerName] = useState("");
+  const [stockName, setStockName] = useState("");
+  const [assignStockName, setAssignStockName] = useState("");
   const [price, setPrice] = useState(0);
   const [quant, setQuant] = useState(0);
   const [type, setType] = useState("");
+  const [assignedStocks, setAssignedStock] = useState<string[]>([]);
 
+
+  function handleStockName(e: any) {
+    setStockName(e.target.value)
+  }
   function handleChangeBrokerName(e: any) {
     setBrokerName(e.target.value);
   }
+  function handleAssignStockName(e: any) {
+    setAssignStockName(e.target.value);
+  }
   function handleChangeQuant(e: any) {
-    setQuant(e.target.value);
+    if (e.target.value === "") {
+      setQuant(0);
+      return;
+    }
+    const qnt = parseInt(e.target.value);
+    if (isNaN(qnt) || negativeNumber(qnt))
+      return;
+    setQuant(qnt);
   }
   function handleChangePrice(e: any) {
-    setPrice(e.target.value);
+    if (e.target.value === "") {
+      setPrice(0);
+      return;
+    }
+    const price = parseFloat(e.target.value);
+    if (isNaN(price) || negativeNumber(price))
+      return;
+    setPrice(price);
   }
 
   function createOffer(e: any) {
     e.preventDefault();
     const newOffer = {
+      stockName,
       brokerName,
       price,
       quant,
@@ -39,10 +64,12 @@ function App() {
   function handleSignInBroker(e: any) {
     e.preventDefault();
     const assignBroker = {
-      brokerName,
+      assignStockName,
     };
     console.log(assignBroker);
   }
+
+  const negativeNumber = (n: number) => n < 0
 
   const lists = [
     {
@@ -107,59 +134,70 @@ function App() {
   ]
 
   return (
-      <Container>
-        <FormsContainer>
-          <Form
-            submit={createOffer}
-            formTitle="Fazer oferta"
-            buttonText="Cadastrar Oferta"
-            height="40%"
-          >
-            <Input
-              type="text"
-              placeholder="Corretora"
-              maxLenght={4}
-              changeInput={handleChangeBrokerName}
+    <Container>
+      <FormsContainer>
+        <Form
+          submit={createOffer}
+          formTitle="Fazer oferta"
+          buttonText="Cadastrar Oferta"
+          height="40%"
+        >
+          <Input
+            type="text"
+            placeholder="Corretora"
+            maxLenght={4}
+            value={brokerName}
+            changeInput={handleChangeBrokerName}
+          />
+          <Input
+            type="text"
+            placeholder="Ativo"
+            maxLenght={4}
+            value={stockName}
+            changeInput={handleStockName}
+          />
+          <Input
+            type="number"
+            placeholder="Quantidade"
+            value={quant}
+            changeInput={handleChangeQuant}
+          />
+          <Input
+            type="number"
+            placeholder="Preço"
+            value={price}
+            changeInput={handleChangePrice}
+          />
+          <InputRadioContainer>
+            <InputRadio
+              labelText="Comprar"
+              inputName="compra"
+              changeInputRadio={handleChangeInputRadio}
             />
-            <Input
-              type="number"
-              placeholder="Quantidade"
-              changeInput={handleChangeQuant}
+            <InputRadio
+              labelText="Vender"
+              inputName="venda"
+              changeInputRadio={handleChangeInputRadio}
             />
-            <Input
-              type="number"
-              placeholder="Preço"
-              changeInput={handleChangePrice}
-            />
-            <InputRadioContainer>
-              <InputRadio
-                labelText="Comprar"
-                inputName="compra"
-                changeInputRadio={handleChangeInputRadio}
-              />
-              <InputRadio
-                labelText="Vender"
-                inputName="venda"
-                changeInputRadio={handleChangeInputRadio}
-              />
-            </InputRadioContainer>
-          </Form>
-          <Form
-            submit={handleSignInBroker}
-            formTitle="Assinar ação"
-            buttonText="Assinar ação"
-            height="20%"
-          >
-            <Input
-              type="text"
-              placeholder="Corretora"
-              maxLenght={4}
-              changeInput={handleChangeBrokerName}
-            />
-          </Form>
-        </FormsContainer>
-        <FlexListContainer lists={lists} />
-      </Container>
+          </InputRadioContainer>
+        </Form>
+        <Form
+          submit={handleSignInBroker}
+          formTitle="Assinar ação"
+          buttonText="Assinar ação"
+          height="20%"
+        >
+          <Input
+            type="text"
+            placeholder="Ação"
+            maxLenght={4}
+            value={assignStockName}
+            changeInput={handleAssignStockName}
+          />
+        </Form>
+      </FormsContainer>
+      <FlexListContainer lists={lists} />
+    </Container>
   );
 }
 
