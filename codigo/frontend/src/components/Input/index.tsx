@@ -3,10 +3,11 @@ interface InputProps {
   type: string;
   placeholder: string;
   changeInput: Function;
+  value: string | number;
   maxLenght?: number;
 }
 
-function Input({ changeInput, placeholder, type, maxLenght }: InputProps) {
+function Input({ changeInput, placeholder, type, maxLenght, value }: InputProps) {
   return (
     <InputStyle
       required
@@ -15,6 +16,7 @@ function Input({ changeInput, placeholder, type, maxLenght }: InputProps) {
       placeholder={placeholder}
       style={{ width: type === "number" ? 120 : "" }}
       onChange={(e) => changeInput(e)}
+      value={value}
     />
   );
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Form from "./components/Form";
+import { FlexListContainer } from "./components/FlexContainer";
 import Input from "./components/Input";
 import { Container, InputRadioContainer, FormsContainer } from "./AppStyle";
 import InputRadio from "./components/InputRadio";
@@ -7,25 +8,47 @@ import axios from "axios";
 
 function App() {
   const [brokerName, setBrokerName] = useState("");
+  const [stockName, setStockName] = useState("");
+  const [assignStockName, setAssignStockName] = useState("");
   const [price, setPrice] = useState(0);
   const [quant, setQuant] = useState(0);
   const [type, setType] = useState("");
+  const [assignedStocks, setAssignedStock] = useState<string[]>([]);
 
   console.log(process.env.REACT_APP_CLOUDAMQP_HOST);
 
+  function handleStockName(e: any) {
+    setStockName(e.target.value);
+  }
   function handleChangeBrokerName(e: any) {
     setBrokerName(e.target.value);
   }
+  function handleAssignStockName(e: any) {
+    setAssignStockName(e.target.value);
+  }
   function handleChangeQuant(e: any) {
-    setQuant(e.target.value);
+    if (e.target.value === "") {
+      setQuant(0);
+      return;
+    }
+    const qnt = parseInt(e.target.value);
+    if (isNaN(qnt) || negativeNumber(qnt)) return;
+    setQuant(qnt);
   }
   function handleChangePrice(e: any) {
-    setPrice(e.target.value);
+    if (e.target.value === "") {
+      setPrice(0);
+      return;
+    }
+    const price = parseFloat(e.target.value);
+    if (isNaN(price) || negativeNumber(price)) return;
+    setPrice(price);
   }
 
   async function createOffer(e: any) {
     e.preventDefault();
     const newOffer = {
+      stockName,
       brokerName,
       price,
       quant,
@@ -40,7 +63,7 @@ function App() {
             delivery_mode: 2,
             content_type: "application/json",
           },
-          routing_key: `asd${newOffer.brokerName}`,
+          routing_key: `${type}.${stockName}`,
           payload: Buffer.from(parseObj).toString("base64"),
           payload_encoding: "base64",
         },
@@ -70,10 +93,73 @@ function App() {
   function handleSignInBroker(e: any) {
     e.preventDefault();
     const assignBroker = {
-      brokerName,
+      assignStockName,
     };
     console.log(assignBroker);
   }
+
+  const negativeNumber = (n: number) => n < 0;
+
+  const lists = [
+    {
+      title: "Compras",
+      items: [
+        {
+          stockName: "Test",
+          brokerName: "BROK1",
+
+          offer: {
+            quant: 10,
+            price: 10,
+          },
+        },
+        {
+          stockName: "Test2",
+          brokerName: "BROK3",
+
+          offer: {
+            quant: 10,
+            price: 10,
+          },
+        },
+        {
+          stockName: "Test3",
+          brokerName: "BROK2",
+
+          offer: {
+            quant: 10,
+            price: 10,
+          },
+        },
+        {
+          stockName: "Test5",
+          brokerName: "BROK6",
+
+          offer: {
+            quant: 10,
+            price: 10,
+          },
+        },
+        {
+          stockName: "Test8",
+          brokerName: "BROK7",
+
+          offer: {
+            quant: 10,
+            price: 10,
+          },
+        },
+      ],
+    },
+    {
+      title: "Vendas",
+      items: [],
+    },
+    {
+      title: "Transações",
+      items: [],
+    },
+  ];
 
   return (
     <Container>
@@ -88,16 +174,26 @@ function App() {
             type="text"
             placeholder="Corretora"
             maxLenght={4}
+            value={brokerName}
             changeInput={handleChangeBrokerName}
+          />
+          <Input
+            type="text"
+            placeholder="Ativo"
+            maxLenght={4}
+            value={stockName}
+            changeInput={handleStockName}
           />
           <Input
             type="number"
             placeholder="Quantidade"
+            value={quant}
             changeInput={handleChangeQuant}
           />
           <Input
             type="number"
             placeholder="Preço"
+            value={price}
             changeInput={handleChangePrice}
           />
           <InputRadioContainer>
@@ -121,16 +217,14 @@ function App() {
         >
           <Input
             type="text"
-            placeholder="Corretora"
+            placeholder="Ação"
             maxLenght={4}
-            changeInput={handleChangeBrokerName}
+            value={assignStockName}
+            changeInput={handleAssignStockName}
           />
         </Form>
       </FormsContainer>
-
-      <div>Compras</div>
-      <div>Vendas</div>
-      <div>Transações</div>
+      <FlexListContainer lists={lists} />
     </Container>
   );
 }
