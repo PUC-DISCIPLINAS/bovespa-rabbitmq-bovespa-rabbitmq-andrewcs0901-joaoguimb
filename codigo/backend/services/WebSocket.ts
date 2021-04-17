@@ -22,9 +22,6 @@ export function sendTransaction(transaction: Transaction) {
 
 export function sendOffer(offer: Stock) {
   console.log("executou");
-  io.on("connection", (socket) => {
-    console.log("Connection");
-    console.log(offer);
-    socket.emit(offer.getStockName(), offer);
-  });
+
+  io.emit(offer.getStockName(), offer);
 }
