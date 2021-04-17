@@ -3,9 +3,15 @@ import * as Amqp from "amqp-ts";
 import StockExchange from "./services/StockExchange";
 
 import Transaction from "./models/Transactions";
+import * as express from "express";
+import * as cors from "cors";
+dotenv.config({ path: __dirname + "/.env" });
 
 console.log("Starting server...");
-dotenv.config({ path: __dirname + "/.env" });
+
+const app = express();
+app.use(express.json());
+app.use(cors());
 
 const host = process.env.CLOUDAMQP_HOST;
 
@@ -42,3 +48,18 @@ transactionQueue.bind(exchange, "transacao.*");
 transactionQueue.activateConsumer((message) => {
   console.log("Message received transação: " + message.getContent());
 });
+
+app.post("/publishMessage", (req, res) => {
+  console.log(req.body);
+  const { brokerName, quant, price, routingKey } = req.body;
+  const message = {
+    brokerName,
+    quant,
+    price,
+  };
+  exchange.send(new Amqp.Message(message, { persistency: false }), routingKey);
+
+  return res.json({ heloo: "world" });
+});
+
+app.listen(process.env.SERVER_PORT);

@@ -11,7 +11,7 @@ export default class StockExchange {
   ): Transaction | Stock {
     const splitedRoutingKey = routingKey.split(".");
 
-    const { quant, price, brokerName } = JSON.parse(message.getContent());
+    const { quant, price, brokerName } = message.getContent();
     const newStock = new Stock(
       { quant, price },
       splitedRoutingKey[1],
