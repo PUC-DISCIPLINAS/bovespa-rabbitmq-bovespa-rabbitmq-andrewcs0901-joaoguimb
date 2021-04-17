@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 
 export const Container = styled.div`
   width: 100%;
@@ -22,3 +22,10 @@ export const InputRadioContainer = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+export const GlobalStyle = createGlobalStyle`
+  body{
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #2E3440;
+  }
+`
