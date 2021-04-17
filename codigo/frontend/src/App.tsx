@@ -3,12 +3,15 @@ import Form from "./components/Form";
 import Input from "./components/Input";
 import { Container, InputRadioContainer, FormsContainer } from "./AppStyle";
 import InputRadio from "./components/InputRadio";
+import axios from "axios";
 
 function App() {
   const [brokerName, setBrokerName] = useState("");
   const [price, setPrice] = useState(0);
   const [quant, setQuant] = useState(0);
   const [type, setType] = useState("");
+
+  console.log(process.env.REACT_APP_CLOUDAMQP_HOST);
 
   function handleChangeBrokerName(e: any) {
     setBrokerName(e.target.value);
@@ -20,16 +23,44 @@ function App() {
     setPrice(e.target.value);
   }
 
-  function createOffer(e: any) {
+  async function createOffer(e: any) {
     e.preventDefault();
     const newOffer = {
       brokerName,
       price,
       quant,
-      type,
     };
-
+    const parseObj = JSON.stringify(newOffer);
     console.log(newOffer);
+    await axios
+      .post(
+        `${process.env.REACT_APP_CLOUDAMQP_HOST}`,
+        {
+          properties: {
+            delivery_mode: 2,
+            content_type: "application/json",
+          },
+          routing_key: `asd${newOffer.brokerName}`,
+          payload: Buffer.from(parseObj).toString("base64"),
+          payload_encoding: "base64",
+        },
+        {
+          headers: {
+            "Content-type": "application/json",
+          },
+          auth: {
+            username: "guest",
+            password: "guest",
+          },
+        }
+      )
+      .then((res) => {
+        const { data } = res;
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function handleChangeInputRadio(e: any) {
