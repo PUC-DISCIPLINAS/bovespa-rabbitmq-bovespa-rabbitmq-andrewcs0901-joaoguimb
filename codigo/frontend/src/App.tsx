@@ -1,10 +1,11 @@
-import { useState } from "react";
 import Form from "./components/Form";
 import { FlexListContainer } from "./components/FlexContainer";
 import Input from "./components/Input";
 import { Container, InputRadioContainer, FormsContainer } from "./AppStyle";
 import InputRadio from "./components/InputRadio";
 import axios from "axios";
+import { useState, useEffect } from "react";
+import socketIOClient from "socket.io-client";
 
 function App() {
   const [brokerName, setBrokerName] = useState("");
@@ -15,7 +16,14 @@ function App() {
   const [type, setType] = useState("");
   const [assignedStocks, setAssignedStock] = useState<string[]>([]);
 
-  console.log(process.env.REACT_APP_CLOUDAMQP_HOST);
+  useEffect(() => {
+    console.log("fora");
+    const socket = socketIOClient(`${process.env.REACT_APP_WEBSOCKET}/test`);
+    socket.on("GOL3", (data) => {
+      console.log("aqui");
+      console.log(data);
+    });
+  }, []);
 
   function handleStockName(e: any) {
     setStockName(e.target.value);
@@ -47,38 +55,18 @@ function App() {
 
   async function createOffer(e: any) {
     e.preventDefault();
-    const routingKey = `${type}.${stockName}`
+    const routingKey = `${type}.${stockName}`;
     const newOffer = {
       stockName,
       brokerName,
       price,
       quant,
-      routingKey
+      routingKey,
     };
-    const parseObj = JSON.stringify(newOffer);
+
     console.log(newOffer);
     await axios
-      .post(
-        `${process.env.REACT_APP_CLOUDAMQP_HOST}`,
-        {
-          properties: {
-            delivery_mode: 2,
-            content_type: "application/json",
-          },
-          routing_key: `${type}.${stockName}`,
-          payload: Buffer.from(parseObj).toString("base64"),
-          payload_encoding: "base64",
-        },
-        {
-          headers: {
-            "Content-type": "application/json",
-          },
-          auth: {
-            username: "guest",
-            password: "guest",
-          },
-        }
-      )
+      .post(`${process.env.REACT_APP_CLOUDAMQP_HOST}/publishMessage`, newOffer)
       .then((res) => {
         const { data } = res;
         console.log(data);
