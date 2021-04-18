@@ -7,15 +7,27 @@ interface FormProps {
   formTitle: string;
   buttonText: string;
   height: string;
+  styles?: {};
 }
 
-function Form({ children, submit, formTitle, buttonText, height }: FormProps) {
+function Form({
+  children,
+  submit,
+  formTitle,
+  buttonText,
+  height,
+  styles,
+}: FormProps) {
   return (
-    <FormContainer onSubmit={(e) => submit(e)} style={{ height }}>
-      <h2>{formTitle}</h2>
-      <InputsContainer>{children}</InputsContainer>
-      <Button>{buttonText}</Button>
-    </FormContainer>
+    <>
+      <FormContainer onSubmit={(e) => submit(e)} style={{ height, ...styles }}>
+        <h2 style={{ marginBottom: 5 }}>{formTitle}</h2>
+        <InputsContainer>
+          {children}
+          <Button type="submit">{buttonText}</Button>
+        </InputsContainer>
+      </FormContainer>
+    </>
   );
 }
 
