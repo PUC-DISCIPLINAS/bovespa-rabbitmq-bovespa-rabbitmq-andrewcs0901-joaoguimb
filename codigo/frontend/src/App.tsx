@@ -20,11 +20,13 @@ function App() {
     console.log("fora");
 
     const socket = socketIOClient(`${process.env.REACT_APP_WEBSOCKET}`);
-    socket.on("test", (data) => {
-      console.log("aqui");
-      console.log(data);
-    });
-  }, []);
+    assignedStocks.forEach(stock => {
+      socket.on(stock, (data: any) => {
+        console.log("aqui");
+        console.log(data);
+      });
+    })
+  }, [assignedStocks]);
 
   function handleStockName(e: any) {
     setStockName(e.target.value);
@@ -71,7 +73,8 @@ function App() {
       .then((res) => {
         const { data } = res;
         console.log(data);
-        setAssignedStock([...assignedStocks, newOffer.stockName]);
+        if (!assignedStocks.includes(newOffer.stockName))
+          setAssignedStock([...assignedStocks, newOffer.stockName]);
       })
       .catch((err) => {
         console.log(err);
@@ -84,7 +87,8 @@ function App() {
 
   function handleSignInBroker(e: any) {
     e.preventDefault();
-    setAssignedStock([...assignedStocks, assignStockName]);
+    if (!assignedStocks.includes(assignStockName))
+      setAssignedStock([...assignedStocks, assignStockName]);
   }
 
   const negativeNumber = (n: number) => n < 0;
