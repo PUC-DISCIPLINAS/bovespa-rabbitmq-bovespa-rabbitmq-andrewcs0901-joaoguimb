@@ -34,7 +34,7 @@ buyQueue.activateConsumer((message) => {
   } catch (error) {
     console.log(error.message);
   }
-});
+}, { noAck: true });
 
 sellQueue.bind(exchange, "venda.*");
 sellQueue.activateConsumer((message) => {
@@ -42,7 +42,7 @@ sellQueue.activateConsumer((message) => {
   StockExchange.handleStock(stockName, message);
 
   console.log("Message received venda: " + message.getContent());
-});
+}, { noAck: true });
 
 transactionQueue.bind(exchange, "transacao.*");
 transactionQueue.activateConsumer((message) => {

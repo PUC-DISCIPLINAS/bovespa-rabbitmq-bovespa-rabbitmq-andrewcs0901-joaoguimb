@@ -113,7 +113,7 @@ class OfferBook {
       const buyerOffer2 = buyerOffer;
       buyerOffer = buyerOffer - offersObj[offer.getStockName()][sell].quant;
       this.transaction = new Transaction(
-        new Date().toLocaleDateString(),
+        new Date().toJSON(),
         {
           price: offer.getOfferPrice(),
           quant: buyerOffer2,
