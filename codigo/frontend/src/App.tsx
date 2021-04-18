@@ -20,7 +20,7 @@ function App() {
     console.log("fora");
 
     const socket = socketIOClient(`${process.env.REACT_APP_WEBSOCKET}`);
-    socket.on("GOL3", (data) => {
+    socket.on("test", (data) => {
       console.log("aqui");
       console.log(data);
     });
@@ -53,7 +53,7 @@ function App() {
     if (isNaN(price) || negativeNumber(price)) return;
     setPrice(price);
   }
-
+  console.log(assignedStocks);
   async function createOffer(e: any) {
     e.preventDefault();
     const routingKey = `${type}.${stockName}`;
@@ -71,6 +71,7 @@ function App() {
       .then((res) => {
         const { data } = res;
         console.log(data);
+        setAssignedStock([...assignedStocks, newOffer.stockName]);
       })
       .catch((err) => {
         console.log(err);
@@ -83,10 +84,7 @@ function App() {
 
   function handleSignInBroker(e: any) {
     e.preventDefault();
-    const assignBroker = {
-      assignStockName,
-    };
-    console.log(assignBroker);
+    setAssignedStock([...assignedStocks, assignStockName]);
   }
 
   const negativeNumber = (n: number) => n < 0;
