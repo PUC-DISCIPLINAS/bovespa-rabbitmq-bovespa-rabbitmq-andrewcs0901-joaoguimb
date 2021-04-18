@@ -2,7 +2,7 @@ import { off } from "process";
 import Offer from "../interfaces/Offer";
 import Stock from "./Stock";
 import Transaction from "./Transactions";
-import { sendTransaction, sendOffer } from "../services/WebSocket";
+import { sendTransaction, sendOffer } from "../server";
 
 class OfferBook {
   static buyOffers: Object = {};

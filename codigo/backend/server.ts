@@ -5,6 +5,11 @@ import StockExchange from "./services/StockExchange";
 import Transaction from "./models/Transactions";
 import * as express from "express";
 import * as cors from "cors";
+
+import Stock from "./models/Stock";
+
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
 dotenv.config({ path: __dirname + "/.env" });
 
 console.log("Starting server...");
@@ -12,6 +17,14 @@ console.log("Starting server...");
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+const listener = app.listen(process.env.PORT || 7777);
+const io = require("socket.io")(listener, {
+  cors: {
+    origin: "*",
+    credentials: true,
+  },
+});
 
 const host = process.env.CLOUDAMQP_HOST;
 
@@ -73,4 +86,19 @@ app.post("/publishMessage", (req, res) => {
   return res.json({ message: "Oferta cadastrada com sucesso" });
 });
 
-app.listen(process.env.PORT || 7777);
+console.log("Starting web-socket");
+
+export function sendTransaction(transaction: Transaction) {
+  console.log("Send Transaction");
+  io.emit(transaction.getStockName(), { ...transaction, type: "transacao" });
+}
+
+export function sendOffer(offer: Stock, type: string) {
+  console.log("Send offera");
+  console.log(offer.getStockName());
+  const response = {
+    ...offer,
+    type,
+  };
+  io.emit(offer.getStockName(), response);
+}
