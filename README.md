@@ -15,7 +15,7 @@ _Instituto de Informática e Ciências Exatas – Pontifícia Universidade de Mi
 ---
 
 _**Resumo**. Escrever aqui o resumo. O resumo deve contextualizar rapidamente o trabalho, descrever seu objetivo e, ao final, 
-mostrar algum resultado relevante do trabalho (até 10 linhas)._
+mostrar algum resultado relevante do trabalho (até 10 linhas). no qual poderá ser acessado através desse link - https://bovespa-rabbitmq-bovespa-rabbitmq-andrewcs0901-joaoguimb.vercel.app/_
 
 ---
 
@@ -23,22 +23,22 @@ mostrar algum resultado relevante do trabalho (até 10 linhas)._
 
 **1. Introdução**
 
-A introdução deve apresentar de dois ou quatro parágrafos de contextualização do trabalho. 
+Este trabalho está inserido em um contexto de mercado financeiro no qual uma bolsa de valores central e corretoras realizam ofertas, transações e assinam em determinados tópicos de ativos.
 
-Este trabalho está inserido em um contexto de bolsa de valores, local onde é realizada a negociação de ações
+Além disso,  no enfoque ao desenvolvimento de sistemas distribuídos, segundo Colouris(2016) - "A comunicação indireta é definida como a comunicação entre entidades de um sistema distribuído por meio de um intermediário, sem nenhum acoplamento direto entre o remetente e o destinatário (ou destinatários)", devido à isso propoe-se o uso de um sistema de fila de mensagens que é bastante utilizado em  cenários de transações financeiras.
 
-Na **contextualização**, o aluno deve dizer do que se trata o trabalho, em que área ou contexto se insere. 
-A **contextualização** deve ser desenvolvida de algo mais genérico para algo mais específico. 
-A citação de pesquisas quantitativas é bem aceita aqui (corretamente referenciadas).
+O objetivo deste trabalho é elaborar uma solução em tempo real para bolsa de valores utilizando um sistema de messageria, no qual é possível cadastrar ofertas, realizar transações e corretoras possam assinar tópicos de ativos.
 
-Em seguida o aluno deve caminhar a contextualização para descrever o **problema** que o artigo trata. 
-O **problema** pode ser algo vivido em uma empresa específica.
+São os objetivos específicos deste trabalho:
 
-O aluno deve escrever um pequeno parágrafo ou frase com o **objetivo geral** do trabalho. 
-O objetivo deve ser bem direto, específico e definido com verbos de ação (elaborar, propor, ava-liar, comparar etc.).
-Apresente também alguns (pelo menos 2) **objetivos específicos** dependendo de onde você vai querer concentrar a 
-sua prática investigativa, ou como você vai aprofundar no seu trabalho. Mostre também as **justificativas** para o 
-desenvolvimento do seu trabalho e caso deseje, desta-que alguma contribuição do trabalho.
+- Aplicar os conhecimentos obtidos na disciplina de Desenvolvimento de Sistemas Móveis e Distribuídos;
+
+- Disponibilizar a execução da aplicação em um ambiente não *localhost*
+
+- Ser possível executar a solução via navegador *web*.
+
+Mostre também as **justificativas** para o 
+desenvolvimento do seu trabalho e caso deseje, destaque alguma contribuição do trabalho.
 
 
     1.1 Contextualização
@@ -50,24 +50,33 @@ desenvolvimento do seu trabalho e caso deseje, desta-que alguma contribuição d
 **2. Projeto da Solução**
 
     2.1. Requisitos funcionais
-	
-Enumere os requisitos funcionais previstos para a sua aplicação. 
-Use a tabela abaixo para enumerá-lo.  Esses requisitos devem estar 
-de acordo com as definições do modelo de negócio.
+
+
 
 | No.           | Descrição                       | Prioridade |
 | ------------- |:-------------------------------:| ----------:|
-| {número       | Descrição resumida do requisito | {Alta      |
-| sequencial    |                                 |  média     |
-| identificador |                                 |  ou baixa  | 
+| 01  | A corretora poderá assinar em determinado tópico | Alta  |
+| 02 | A Bolsa de valores deverá registrar as ofertas |  Alta |
+| 03 | A corretora poderá criar uma oferta de venda | Alta  |
+| 04 | A corretora poderá criar uma oferta de compra| Alta |
+| 05 | Quando uma oferta de compra for maior ou igual a uma oferta de venda, a bolsa de valores deverá registrar uma transação| Alta|
+| 06 | Quando uma transação for registrada a bolsa de valores deve notificar as corretoras interessadas naquele ativo | Media | 
 
     2.2. Tecnologias
 
-Descreva qual(is) tecnologias você vai usar para resolver o seu problema, ou seja implementar a sua solução. 
-Liste todas as tecnologias envolvidas, linguagens a serem utilizadas, serviços web, frameworks, bibliotecas, 
-IDEs de desenvolvimento, e ferramentas.  Apresente também uma figura explicando como as tecnologias estão 
-relacionadas ou como uma interação do usuário com o sistema vai ser conduzida, por onde ela passa até 
-retornar uma resposta ao usuário. 
+Para a realização deste trabalho foram utilizadas as seguintes tecnologias:
+
+- **RabbitMQ**: Sistema de Mensageria *open source*  baseado na categoria de mensagens indiretas via fila de mensagens;
+- **NodeJS**:  Ambiente de execução JavaScript q 
+- **AMQP-TS**: Biblioteca de NodeJS que permite o uso da forte tipagem do TypeScript junto da simplificação da comunicação *Advanced Message Queuing Protocol*;
+- **CloudAMQP**: Serviço em nuvem de publicação de mensagens;
+- **ReactJS**: Biblioteca em JavaScript para o desenvolvimento de interfaces web reativas com o enfoque em reutilização de componentes ;
+- **Express**:
+- **WebSocket**:
+- **Heroku**:
+
+
+![Diagrama Geral da Solução](artefatos/diagrama_arquitetura.png)
 
     2.3. Serviços inteligentes
 

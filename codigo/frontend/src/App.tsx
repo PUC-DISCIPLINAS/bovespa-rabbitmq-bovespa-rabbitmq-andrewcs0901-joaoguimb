@@ -114,16 +114,16 @@ function App() {
     };
 
     if (stockName.length !== 4) {
-      toast.warning(`😓 O campo do ativo deve ter 4 caracteres`, {
+      return toast.warning(`😓 O campo do ativo deve ter 4 caracteres`, {
         position: "top-right",
       });
-    } else if (brokerName.length !== 4) {
+    } if (!assignedStocks.includes(stockName))
+      setAssignedStock((currentStocks) => [...currentStocks, stockName]);
+    else if (brokerName.length !== 4) {
       toast.warning(`😓 O campo da corretora deve ter 4 caracteres`, {
         position: "top-right",
       });
     } else {
-      if (!assignedStocks.includes(stockName))
-        setAssignedStock((currentStocks) => [...currentStocks, stockName]);
       axios
         .post(
           `${process.env.REACT_APP_CLOUDAMQP_HOST}/publishMessage`,
