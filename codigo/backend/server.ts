@@ -26,23 +26,29 @@ const sellQueue = connection.declareQueue("sellQueue");
 const transactionQueue = connection.declareQueue("transactionQueue");
 
 buyQueue.bind(exchange, "compra.*");
-buyQueue.activateConsumer((message) => {
-  try {
-    const stockName = message.fields.routingKey;
-    StockExchange.handleStock(stockName, message);
-    console.log("Message received compra: " + message.getContent());
-  } catch (error) {
-    console.log(error.message);
-  }
-}, { noAck: true });
+buyQueue.activateConsumer(
+  (message) => {
+    try {
+      const stockName = message.fields.routingKey;
+      StockExchange.handleStock(stockName, message);
+      console.log("Message received compra: " + message.getContent());
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+  { noAck: true }
+);
 
 sellQueue.bind(exchange, "venda.*");
-sellQueue.activateConsumer((message) => {
-  const stockName = message.fields.routingKey;
-  StockExchange.handleStock(stockName, message);
+sellQueue.activateConsumer(
+  (message) => {
+    const stockName = message.fields.routingKey;
+    StockExchange.handleStock(stockName, message);
 
-  console.log("Message received venda: " + message.getContent());
-}, { noAck: true });
+    console.log("Message received venda: " + message.getContent());
+  },
+  { noAck: true }
+);
 
 transactionQueue.bind(exchange, "transacao.*");
 transactionQueue.activateConsumer((message) => {
@@ -67,4 +73,4 @@ app.post("/publishMessage", (req, res) => {
   return res.json({ message: "Oferta cadastrada com sucesso" });
 });
 
-app.listen(process.env.SERVER_PORT);
+app.listen(process.env.PORT || 7777);

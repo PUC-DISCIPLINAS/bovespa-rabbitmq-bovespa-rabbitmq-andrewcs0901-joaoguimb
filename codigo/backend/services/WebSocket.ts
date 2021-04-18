@@ -15,11 +15,13 @@ io.on("connection", (socket: Socket) => {
   console.log("Usuário conectado");
 });
 
-httpServer.listen(5566);
+console.log("Starting web-socket");
+
+httpServer.listen(process.env.WEBSOCKET_PORT || 6789);
 
 export function sendTransaction(transaction: Transaction) {
   console.log("Send Transaction");
-  io.emit(transaction.getStockName(), {...transaction, type: "transacao"});
+  io.emit(transaction.getStockName(), { ...transaction, type: "transacao" });
 }
 
 export function sendOffer(offer: Stock, type: string) {
