@@ -18,7 +18,8 @@ function App() {
 
   useEffect(() => {
     console.log("fora");
-    const socket = socketIOClient(`${process.env.REACT_APP_WEBSOCKET}/test`);
+
+    const socket = socketIOClient(`${process.env.REACT_APP_WEBSOCKET}`);
     socket.on("GOL3", (data) => {
       console.log("aqui");
       console.log(data);
