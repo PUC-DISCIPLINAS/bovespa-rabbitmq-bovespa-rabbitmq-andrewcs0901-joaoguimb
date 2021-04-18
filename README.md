@@ -86,7 +86,22 @@ Apresente a estrutura das tabelas de banco de dados no modelo Diagrama de Entida
 
 **4. Sistema desenvolvido**
 
-Faça aqui uma breve descrição do software e coloque as principais telas com uma explicação de como usar cada uma.
+![Alt text](artefatos/images/compra.png "Title")
+
+1. O usuário pode cadastrar uma oferta de compra preenchendo o formulário, informando o nome da corretora, nome da ação, quantide, preço e marcando a opção "Comprar", após isso será adicionado essa oferta na lista de compras
+
+![Alt text](artefatos/images/venda.png "Title")
+
+2. Da mesma forma, o usuário também pode cadastrar uma oferta de venda informando os mesmos campos e marcando a opção "Vender"
+
+![Alt text](artefatos/images/transacao.png "Title")
+
+3. A transação ocorre quando há uma oferta de compra e venda com os mesmos valores por uma mesma ação, e é informado para todos os interessados naquela ação que o evento ocorreu
+
+![Alt text](artefatos/images/assinar.png "Title")
+
+4. O usuário pode se cadastrar para receber atualizações de ofertas de compras, vendas e transações de uma determinada ação preenchendo o campo "Assinar ação"
+
 
 **5. Avaliação**
 
