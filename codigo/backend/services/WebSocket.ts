@@ -19,13 +19,14 @@ httpServer.listen(5566);
 
 export function sendTransaction(transaction: Transaction) {
   console.log("Send Transaction");
-  io.emit(transaction.getStockName(), {transaction, type: "transaction"});
+  io.emit(transaction.getStockName(), {...transaction, type: "transacao"});
 }
 
 export function sendOffer(offer: Stock, type: string) {
   console.log("Send offer");
+  console.log(offer.getStockName());
   const response = {
-    offer,
+    ...offer,
     type,
   };
   io.emit(offer.getStockName(), response);

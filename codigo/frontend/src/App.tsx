@@ -6,6 +6,13 @@ import InputRadio from "./components/InputRadio";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
+import { ItemProps } from "./components/Item/ItemProps";
+interface BrokerList {
+  [compra:string]: {
+    items: ItemProps[]
+  }
+}
+
 
 function App() {
   const [brokerName, setBrokerName] = useState("");
@@ -15,18 +22,30 @@ function App() {
   const [quant, setQuant] = useState(0);
   const [type, setType] = useState("");
   const [assignedStocks, setAssignedStock] = useState<string[]>([]);
+  const [lists, setList] = useState<BrokerList>(
+    {
+      "compra": {
+        items: [],
+      },
+      "venda": {
+        items: [],
+      },
+      "transacao": {
+        items: [],
+      }
+    }
+  )
 
   useEffect(() => {
-    console.log("fora");
-
     const socket = socketIOClient(`${process.env.REACT_APP_WEBSOCKET}`);
+    console.log(lists);
     assignedStocks.forEach(stock => {
       socket.on(stock, (data: any) => {
-        console.log("aqui");
         console.log(data);
+        setList( (oldlist) => ({ ...oldlist, [data.type]: {items: [data, ...oldlist[data.type].items]} }))
       });
     })
-  }, [assignedStocks]);
+  }, [assignedStocks,lists]);
 
   function handleStockName(e: any) {
     setStockName(e.target.value);
@@ -93,66 +112,8 @@ function App() {
 
   const negativeNumber = (n: number) => n < 0;
 
-  const lists = [
-    {
-      title: "Compras",
-      items: [
-        {
-          stockName: "Test",
-          brokerName: "BROK1",
-
-          offer: {
-            quant: 10,
-            price: 10,
-          },
-        },
-        {
-          stockName: "Test2",
-          brokerName: "BROK3",
-
-          offer: {
-            quant: 10,
-            price: 10,
-          },
-        },
-        {
-          stockName: "Test3",
-          brokerName: "BROK2",
-
-          offer: {
-            quant: 10,
-            price: 10,
-          },
-        },
-        {
-          stockName: "Test5",
-          brokerName: "BROK6",
-
-          offer: {
-            quant: 10,
-            price: 10,
-          },
-        },
-        {
-          stockName: "Test8",
-          brokerName: "BROK7",
-
-          offer: {
-            quant: 10,
-            price: 10,
-          },
-        },
-      ],
-    },
-    {
-      title: "Vendas",
-      items: [],
-    },
-    {
-      title: "Transações",
-      items: [],
-    },
-  ];
+  const list = () => Object.keys(lists).map( (list:string) => (
+    {title:list, items: lists[list].items}))
 
   return (
     <Container>
@@ -217,7 +178,7 @@ function App() {
           />
         </Form>
       </FormsContainer>
-      <FlexListContainer lists={lists} />
+      <FlexListContainer lists={list()} />
     </Container>
   );
 }
