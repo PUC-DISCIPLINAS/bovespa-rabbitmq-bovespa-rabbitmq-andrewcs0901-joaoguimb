@@ -57,9 +57,14 @@ app.post("/publishMessage", (req, res) => {
     quant,
     price,
   };
-  exchange.send(new Amqp.Message(message, { persistency: false }), routingKey);
+  exchange.send(
+    new Amqp.Message(message, {
+      persistent: false,
+    }),
+    routingKey
+  );
 
-  return res.json({ heloo: "world" });
+  return res.json({ message: "Oferta cadastrada com sucesso" });
 });
 
 app.listen(process.env.SERVER_PORT);

@@ -26,7 +26,7 @@ class OfferBook {
       return this.transaction;
     } else {
       this.buyOffers = this.createOffer(this.buyOffers, offer);
-      sendOffer(offer);
+      sendOffer(offer, "compra");
       return offer;
     }
   }
@@ -49,7 +49,7 @@ class OfferBook {
       return this.transaction;
     } else {
       this.sellOffers = this.createOffer(this.sellOffers, offer);
-      sendOffer(offer);
+      sendOffer(offer, "venda");
       return offer;
     }
   }
@@ -63,7 +63,7 @@ class OfferBook {
       quant: offer.getOfferQuant(),
     };
     offers[offer.getStockName()] = newObj;
-    sendOffer(offer);
+    sendOffer(offer, transactionType);
   }
 
   private static checkTransaction(offer: Stock, transactionType: string) {
