@@ -1,10 +1,8 @@
 # Corretora da bolsa de valores com RabbitMQ
 
-
 **Andrew Costa Silva, andrew.costa@sga.pucminas.br**
 
 **João Guilherme Martins Borborema, jborborema@sga.pucminas.br**
-
 
 ---
 
@@ -14,99 +12,87 @@ _Instituto de Informática e Ciências Exatas – Pontifícia Universidade de Mi
 
 ---
 
-_**Resumo**. Escrever aqui o resumo. O resumo deve contextualizar rapidamente o trabalho, descrever seu objetivo e, ao final, 
-mostrar algum resultado relevante do trabalho (até 10 linhas)._
+_**Resumo**. Este trabalho está inserido em um contexto de mercado financeiro em que uma bolsa de valores e corretoras realizam ofertas, transações e assinam em determinados tópicos de ativos, a solução utiliza um sistema web com fila de mensagens, no qual pode ser acessado através de  https://bovespa-rabbitmq-bovespa-rabbitmq-andrewcs0901-joaoguimb.vercel.app/_
 
 ---
 
+## 1. Introdução
 
+### 1.1. Contextualização
 
-**1. Introdução**
+Este trabalho está inserido em um contexto de mercado financeiro no qual uma bolsa de valores e corretoras realizam ofertas, transações e assinam em determinados tópicos de ativos.
 
-A introdução deve apresentar de dois ou quatro parágrafos de contextualização do trabalho. 
+### 1.2 Problema
 
-Este trabalho está inserido em um contexto de bolsa de valores, local onde é realizada a negociação de ações
+No enfoque ao desenvolvimento de sistemas distribuídos, segundo Colouris(2016) - "A comunicação indireta é definida como a comunicação entre entidades de um sistema distribuído por meio de um intermediário, sem nenhum acoplamento direto entre o remetente e o destinatário (ou destinatários)". Devido à isso propoe-se o uso de um sistema de fila de mensagens bastante utilizado em  cenários de transações financeiras.
 
-Na **contextualização**, o aluno deve dizer do que se trata o trabalho, em que área ou contexto se insere. 
-A **contextualização** deve ser desenvolvida de algo mais genérico para algo mais específico. 
-A citação de pesquisas quantitativas é bem aceita aqui (corretamente referenciadas).
+### 1.3. Objetivo Geral
 
-Em seguida o aluno deve caminhar a contextualização para descrever o **problema** que o artigo trata. 
-O **problema** pode ser algo vivido em uma empresa específica.
+O objetivo deste trabalho é elaborar uma solução em tempo real para bolsa de valores utilizando um sistema de messageria, no qual é possível cadastrar ofertas, realizar transações e corretoras possam assinar tópicos de ativos.
 
-O aluno deve escrever um pequeno parágrafo ou frase com o **objetivo geral** do trabalho. 
-O objetivo deve ser bem direto, específico e definido com verbos de ação (elaborar, propor, ava-liar, comparar etc.).
-Apresente também alguns (pelo menos 2) **objetivos específicos** dependendo de onde você vai querer concentrar a 
-sua prática investigativa, ou como você vai aprofundar no seu trabalho. Mostre também as **justificativas** para o 
-desenvolvimento do seu trabalho e caso deseje, desta-que alguma contribuição do trabalho.
+### 1.4. Objetivos Específicos
 
+São os objetivos específicos deste trabalho:
 
-    1.1 Contextualização
-    1.2 Problema
-    1.3 Objetivo geral
-       1.3.1 Objetivos específicos
-    1.4 Justificativas
+- Aplicar os conhecimentos obtidos na disciplina de Desenvolvimento de Sistemas Móveis e Distribuídos;
 
-**2. Projeto da Solução**
+- Disponibilizar a execução da aplicação em um ambiente não *localhost*
 
-    2.1. Requisitos funcionais
-	
-Enumere os requisitos funcionais previstos para a sua aplicação. 
-Use a tabela abaixo para enumerá-lo.  Esses requisitos devem estar 
-de acordo com as definições do modelo de negócio.
+- Ser possível executar a solução via navegador *web*.
+
+## 2. Projeto da Solução
+
+### 2.1. Requisitos funcionais
 
 | No.           | Descrição                       | Prioridade |
 | ------------- |:-------------------------------:| ----------:|
-| {número       | Descrição resumida do requisito | {Alta      |
-| sequencial    |                                 |  média     |
-| identificador |                                 |  ou baixa  | 
+| 01  | A corretora poderá assinar em determinado tópico | Alta  |
+| 02 | A Bolsa de valores deverá registrar as ofertas |  Alta |
+| 03 | A corretora poderá criar uma oferta de venda | Alta  |
+| 04 | A corretora poderá criar uma oferta de compra| Alta |
+| 05 | Quando uma oferta de compra for maior ou igual a uma oferta de venda, a bolsa de valores deverá registrar uma transação| Alta|
+| 06 | Quando uma transação for registrada a bolsa de valores deve notificar as corretoras interessadas naquele ativo | Media | 
 
-    2.2. Tecnologias
+### 2.2. Tecnologias
 
-Descreva qual(is) tecnologias você vai usar para resolver o seu problema, ou seja implementar a sua solução. 
-Liste todas as tecnologias envolvidas, linguagens a serem utilizadas, serviços web, frameworks, bibliotecas, 
-IDEs de desenvolvimento, e ferramentas.  Apresente também uma figura explicando como as tecnologias estão 
-relacionadas ou como uma interação do usuário com o sistema vai ser conduzida, por onde ela passa até 
-retornar uma resposta ao usuário. 
+Para a realização deste trabalho foram utilizadas as seguintes tecnologias:
 
-    2.3. Serviços inteligentes
+- **RabbitMQ**: Sistema de Mensageria *open source*  baseado na categoria de mensagens indiretas via fila de mensagens, aplicado neste trabalho no contexto de publicação de ofertas;
+- **NodeJS**:  Ambiente de execução JavaScript que permite o rápido desenvolvimento de aplicações cliente-servidor, aplicado como serviço de consumo de mensagens na fila;
+- **AMQP-TS**: Biblioteca de NodeJS que permite o uso da forte tipagem do TypeScript junto da simplificação da comunicação *Advanced Message Queuing Protocol*;
+- **CloudAMQP**: Serviço em nuvem de publicação de mensagens no Protocolo AMQP - *Advanced Message Queue Protocol*, aplicado como abstração do servidor de armazenamento das mensagens publicadas;
+- **ReactJS**: Biblioteca em JavaScript para o desenvolvimento de interfaces web reativas com o enfoque em reutilização de componentes, utilizado no trabalho como interface no navegador *web*;
+- **Express**: *Framework* de desenvolvimento para aplicações *web* em NodeJS com o enfoque na simplificação de desenvolvimento de API's;
+- **WebSocket**: Tecnologia de comunicação bidirecional, utilizado no contexto de notificação das corretoras interessadas em determinados ativos;
+- **Heroku**: Plataforma Paas (*Plataform as a Service*) em nuvem que possibilita a construção, execução e operação de aplicações simplificando o caminho de entrega para os usuários, utilizado para publicação online do trabalho.
 
-Descreva o mecanismo de inteligência que será utilizado no seu sistema. Utilize a modelagem baseada em agente
-para definir as entradas e saídas do seu módulo de serviço inteligente. Apresente quem irá fornecer o serviço
-e em que módulo será utilizado.
+### 2.3 Diagrama da Solução
 
-	
-**3. Modelagem de dados**
+![Diagrama Geral da Solução](artefatos/diagrama_arquitetura.png)
 
-Apresente o modelo de dados. Defina o dicionário de dados com os respectivos formatos e significados.
+## 3. Sistema desenvolvido
 
-    3.1. Diagrama de Entidade-Relacionamento
+![Alt text](artefatos/images/compra.png "Title")
 
-Apresente a estrutura das tabelas de banco de dados no modelo Diagrama de Entidade-Relacionamento.
+1. O usuário pode cadastrar uma oferta de compra preenchendo o formulário, informando o nome da corretora, nome da ação, quantide, preço e marcando a opção "Comprar", após isso será adicionado essa oferta na lista de compras
 
-**4. Sistema desenvolvido**
+![Alt text](artefatos/images/venda.png "Title")
 
-Faça aqui uma breve descrição do software e coloque as principais telas com uma explicação de como usar cada uma.
+2. Da mesma forma, o usuário também pode cadastrar uma oferta de venda informando os mesmos campos e marcando a opção "Vender"
 
-**5. Avaliação**
+![Alt text](artefatos/images/transacao.png "Title")
+
+3. A transação ocorre quando há uma oferta de compra e venda com os mesmos valores por uma mesma ação, e é informado para todos os interessados naquela ação que o evento ocorreu
+
+![Alt text](artefatos/images/assinar.png "Title")
+
+4. O usuário pode se cadastrar para receber atualizações de ofertas de compras, vendas e transações de uma determinada ação preenchendo o campo "Assinar ação"
+
+
+## 4. Avaliação
 
 O atual trabalho é apenas uma simulação de uma bolsa de valores, não sendo possível utilizar em um cenário real em produção. Entretanto, o sistema possui as funcionalidades em tempo real da bolsa de valores,como a possibilidade de o usuário cadastrar as ações em que ele tem interesse, cadastrar uma oferta de compra ou de venda e acompanhar as movimentações financeiras daqueles ativos que o cliente deseja acompanhar.
 
-**6. Conclusão**
+## 5. Conclusão
 
-Apresente aqui a conclusão do seu trabalho. Discussão dos resultados obtidos no trabalho, onde se verifica as 
-observações pessoais de cada aluno. Poderá também apresentar sugestões de novas linhas de estudo.  
-
-
-**REFERÊNCIAS**
-
-
-**[1.1]** - _ELMASRI, Ramez; NAVATHE, Sham. **Sistemas de banco de dados**. 7. ed. São Paulo: Pearson, c2019. E-book. ISBN 9788543025001._
-
-**[1.2]** - _COPPIN, Ben. **Inteligência artificial**. Rio de Janeiro, RJ: LTC, c2010. E-book. ISBN 978-85-216-2936-8._
-
-**[1.3]** - _CORMEN, Thomas H. et al. **Algoritmos: teoria e prática**. Rio de Janeiro, RJ: Elsevier, Campus, c2012. xvi, 926 p. ISBN 9788535236996._
-
-**[1.4]** - _SUTHERLAND, Jeffrey Victor. **Scrum: a arte de fazer o dobro do trabalho na metade do tempo**. 2. ed. rev. São Paulo, SP: Leya, 2016. 236, [4] p. ISBN 9788544104514._
-
-**[1.5]** - _RUSSELL, Stuart J.; NORVIG, Peter. **Inteligência artificial**. Rio de Janeiro: Elsevier, c2013. xxi, 988 p. ISBN 9788535237016._
+O presente trabalho demonstrou-se bastante desafiador por possuir novos métodos de comunicação entre serviços, mas foi um bom desafio para reforçar os conteúdos aprendidos em sala de aula. Além disso, a lógica da bolsa de valores foi bastante interessante de se desenvolver, para poder efetuar as transações entre os diversos clientes.
