@@ -1,1 +1,0 @@
-web ts-node ./codigo/backend/server.ts

@@ -40,14 +40,37 @@ function App() {
   )
 
   useEffect(() => {
-    const socket = socketIOClient(`${process.env.REACT_APP_WEBSOCKET}`);
-    console.log("data-aqui");
+    const socket = socketIOClient(`${process.env.REACT_APP_WEBSOCKET}`, { transports: ['websocket'] });
     assignedStocks.forEach((stock) => {
-      console.log(stock);
+
       socket.on(stock, (data: any) => {
-        console.log(data);
-        setList((oldlist) => ({ ...oldlist, [data.type]: { items: [data, ...oldlist[data.type].items] } }))
+        if (data.type !== 'transacao') {
+          setList((oldlist) =>
+          ({
+            ...oldlist, [data.type]: {
+              items: !oldlist[data.type].items.filter(item => item.brokerName === data.brokerName).find(item => item.stockName === data.brokeName) ?
+                [data, ...oldlist[data.type].items] :
+                oldlist[data.type]
+                  .items.map(item => item.brokerName === data.brokerName && item.stockName === data.brokeName ? data : item)
+            }
+          }))
+        }
+        else
+          setList((oldlist) => (
+            {
+              "compra": {
+                items: oldlist.compra.items.filter(item => item.brokerName !== data.buyerBrokerName || item.stockName !== data.stockName)
+              },
+              "venda": {
+                items: oldlist.venda.items.filter(item => item.brokerName !== data.sellerBrokerName || item.stockName !== data.stockName),
+              },
+              "transacao": {
+                items: [data, ...oldlist.transacao.items],
+              }
+            }
+          ))
       });
+
     })
   }, [assignedStocks]);
 
@@ -108,14 +131,12 @@ function App() {
         )
         .then((res) => {
           const { data } = res;
-          console.log(data);
           toast.success(`🥳 ${data.message}`, {
             position: "top-right",
             autoClose: 5000,
           });
         })
         .catch((err) => {
-          console.log(err);
           toast.error(`😓${err.message}`, {
             position: "top-right",
           });

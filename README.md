@@ -25,6 +25,8 @@ mostrar algum resultado relevante do trabalho (até 10 linhas)._
 
 A introdução deve apresentar de dois ou quatro parágrafos de contextualização do trabalho. 
 
+Este trabalho está inserido em um contexto de bolsa de valores, local onde é realizada a negociação de ações
+
 Na **contextualização**, o aluno deve dizer do que se trata o trabalho, em que área ou contexto se insere. 
 A **contextualização** deve ser desenvolvida de algo mais genérico para algo mais específico. 
 A citação de pesquisas quantitativas é bem aceita aqui (corretamente referenciadas).
