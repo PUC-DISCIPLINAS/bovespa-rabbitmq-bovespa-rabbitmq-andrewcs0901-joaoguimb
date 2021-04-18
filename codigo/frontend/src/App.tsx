@@ -40,7 +40,7 @@ function App() {
   )
 
   useEffect(() => {
-    const socket = socketIOClient(`${process.env.REACT_APP_WEBSOCKET}`);
+    const socket = socketIOClient(`${process.env.REACT_APP_WEBSOCKET}`, { transports: ['websocket'] });
     assignedStocks.forEach((stock) => {
 
       socket.on(stock, (data: any) => {
